@@ -4,6 +4,7 @@ title:      理解梯度
 subtitle:   多条分支或多次forward对梯度的影响
 date:       2023-04-03
 author:     cwy
+header-img: img/post-bg-cook.jpg
 catalog: true
 tags:
     - neural network

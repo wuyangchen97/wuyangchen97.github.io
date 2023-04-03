@@ -1,0 +1,130 @@
+---
+layout:     post
+title:      理解梯度
+subtitle:   多条分支或多次forward对梯度的影响
+date:       2023-04-03
+author:     cwy
+catalog: true
+tags:
+    - neural network
+    - pytorch
+    - 基础
+---
+
+```
+import torch 
+import numpy as np
+import torch.nn as nn
+
+def test1():
+    w = torch.tensor(1.,requires_grad=True)
+    print(w.grad)# None
+    y = 2*w-1
+    y.backward()#==y.backward(1)
+    print(w.grad)#2
+
+def test2():
+    # 疑惑，这样子更新的值不就与计算出的loss无关了嘛？
+    criterion = nn.L1Loss()
+    w = torch.tensor(1.,requires_grad=True)
+    y = 2*w-1
+    optim = torch.optim.SGD([w], lr=1) 
+    output = criterion(y, torch.tensor(0.))
+    output.backward()
+    optim.step()
+    print(w.grad)
+    # w = w - lr*w.grad
+    print(w)
+    #解答：因为loss本身就是希望更新使得其越小越好，上述的loss最小值为无穷小
+
+def test3():
+    criterion = nn.MSELoss()
+    w = torch.tensor(1.,requires_grad=True)
+    y = 2*w+1
+    optim = torch.optim.SGD([w], lr=1) 
+    output = criterion(y, torch.tensor(1.))
+    print('output:',output) #4
+    output.backward()
+    optim.step()
+    print('w.grad:',w.grad) #8
+    # w = w - lr*w.grad
+    # w.grad = dL/dy * dy/dw = 2(y-1)*2
+    print(w) #-7
+
+def test4():
+    # 测试当有多个output分支时
+    
+    criterion = nn.MSELoss()
+    w = torch.tensor(1.,requires_grad=True)
+    y1 = 2*w+1
+    optim = torch.optim.SGD([w], lr=1) 
+
+    y2 = 2*y1 
+    y3 = -1*y1 
+
+    loss2 = criterion(y2, torch.tensor(0.))
+    loss3 = criterion(y3, torch.tensor(0.))
+    # loss2.backward()
+    # print('w.grad:',w.grad)
+    # loss3.backward()
+    # print('w.grad:',w.grad)
+    # 两次backward会报错：Trying to backward through the graph a second time, 
+    # but the buffers have already been freed. Specify retain_graph=True
+    loss2.backward(retain_graph=True)
+    print('w.grad:',w.grad) #48
+    loss3.backward()
+    print('w.grad:',w.grad) # 60 可知，有两条output时，梯度是直接累加的
+    optim.step()
+    print(w)#-59
+
+def test5():
+    # 测试当有多个output分支时
+    criterion = nn.MSELoss()
+    w = torch.tensor(1.,requires_grad=True)
+    y1 = 2*w+1
+    optim = torch.optim.SGD([w], lr=1) 
+
+    y2 = 2*y1 
+    y3 = -1*y1 
+
+    loss2 = criterion(y2, torch.tensor(0.))
+    loss3 = criterion(y3, torch.tensor(0.))
+    # loss2.backward()
+    # print('w.grad:',w.grad)
+    # loss3.backward()
+    # print('w.grad:',w.grad)
+    # 两次backward会报错：Trying to backward through the graph a second time, 
+    # but the buffers have already been freed. Specify retain_graph=True
+    (loss2+loss3).backward()
+    print('w.grad:',w.grad) #60 与retain_graph并backward两次的结果一致
+   
+    optim.step()
+    print(w)#-59
+
+def test6():
+    # 测试当有多个loss时
+    criterion = nn.MSELoss()
+    w = torch.tensor(1.,requires_grad=True)
+    y1 = 2*w+1
+    optim = torch.optim.SGD([w], lr=1) 
+
+    y2 = 2*y1 
+    y3 = -1*y1 
+
+    loss2 = criterion(y2, torch.tensor(0.))
+    loss3 = criterion(y2, torch.tensor(1.))
+    # loss2.backward()
+    # print('w.grad:',w.grad)
+    # loss3.backward()
+    # print('w.grad:',w.grad)
+    # 两次backward会报错：Trying to backward through the graph a second time, 
+    # but the buffers have already been freed. Specify retain_graph=True
+    (loss2+loss3).backward()
+    # 可知gradient本质是与loss有关的，而不是分支的多少
+    print('w.grad:',w.grad) #88 与retain_graph并backward两次的结果一致
+   
+    optim.step()
+    print(w)#--87
+
+test6()
+```

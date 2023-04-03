@@ -12,6 +12,8 @@ tags:
     - 基础
 ---
 
+## multi output/loss时对梯度的影响
+
 ```
 import torch 
 import numpy as np

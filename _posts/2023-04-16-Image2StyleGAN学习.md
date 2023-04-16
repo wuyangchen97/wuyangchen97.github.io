@@ -34,7 +34,7 @@ def embedding_function(image):
 
     loss_ = []
     loss_psnr = []
-    for e in range(args.epochs):
+    for e in range(args.epochs):#1500次即可
         optimizer.zero_grad()
         syn_img = g_synthesis(latents)
         syn_img = (syn_img + 1.0) / 2.0  
@@ -50,11 +50,7 @@ def embedding_function(image):
 ```
 
 ## 论文要点
-
-`Perceptual Loss`，一种非正式协议，通知其他对象的指定属性发生了改变。
-
-简单理解就是，监听一个对象的某个`属性`是否发生改变。
-
+TODO
 ### 什么类型的图能够有效做embedding
 测试方式：  
 输入：faces of cat, dogs, and paintings； and register these images to a canonical face position （注意测试的两个要点：一是要共同享有face结构的；二是要配准至标准脸位置）  
@@ -75,7 +71,8 @@ stylegan中是`z->mappinng net->w->synthesize net->image`
 可以选择的隐空间有最开始的noise z，中间输出w。  
 但是文中说，这两种的效果都不是很好，最终选择了w+空间，也就是中间输出w的扩展。w的shape是(1,512),而w+则是(18,512),其中的18对应了synthesize net的每一层。  
 此外，文中还进行了额外的实验，看synthesize net的权重是否会影响重建的效果，结果如下图，能发现w+空间得到的(f),(g)明显好于w空间的(c),(d)  
-> 这儿没太明白：个人推测是用训练好的网络优化得到embedding后，再随机初始化synthesize net的权重，看生成图像的质量).     
+> 这儿没太明白：个人推测是用训练好的网络优化得到embedding后，再随机初始化synthesize net的权重，看生成图像的质量).  
+     
 <img width="608" alt="image" src="https://user-images.githubusercontent.com/110716367/232280171-61ef6b02-5e9c-4bd6-855a-afc7ef1b9c7c.png">   
 
 

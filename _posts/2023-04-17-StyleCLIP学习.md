@@ -21,6 +21,9 @@ StyleCLIP的目的是，输入一张图像与对应的文字描述，期望该�
 这种方式的缺点的每次manipulation需要一定时间（几分钟的优化过程）
 
 ## Latent Mapper
-这种方式是构建一个专门的mapper模型，该模型能够学习到给出一个text，这个text对应在w+空间中的mannipulation step。
+这种方式是构建一个专门的mapper模型，该模型能够学习到给出一个text，这个text对应在w+空间中的mannipulation step。  
+如下图所示，学习到的东西可以理解为一个残差residual。 
+<img width="799" alt="image" src="https://user-images.githubusercontent.com/110716367/232319477-2a0ba9b7-5a96-4f91-a4c3-7940c0b55835.png">  
+
 
 

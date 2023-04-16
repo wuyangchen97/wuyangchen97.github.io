@@ -37,8 +37,8 @@ def embedding_function(image):
         optimizer.zero_grad()
         syn_img = g_synthesis(latents)
         syn_img = (syn_img + 1.0) / 2.0
-	# original high-resolution real img --- MSE loss --- high-resolution synthesized img 
-	# downsampled real img --- perceptual loss --- downsampled synthesized img
+	# original high-resolution real img --- MSE loss --- high-resolution synthesized img   
+	# downsampled real img --- perceptual loss --- downsampled synthesized img  
         mse, per_loss = loss_function(syn_img, image, img_p, MSE_loss, upsample, perceptual)
         psnr = PSNR(mse, flag=0)
         loss = per_loss + mse
@@ -53,16 +53,27 @@ def embedding_function(image):
 简单理解就是，监听一个对象的某个`属性`是否发生改变。
 
 ### 什么类型的图能够有效做embedding
-测试方式：
+测试方式：  
 输入：faces of cat, dogs, and paintings； and register these images to a canonical face position （注意测试的两个要点：一是要共同享有face结构的；二是要配准至标准脸位置）  
 模型：在human face上训练好的模型     
 **结论：** 即使没有在除了人脸上的类别上做训练，但是模型依旧有泛化性，能对其他类别做embedding，知识恢复的效果有些模糊。如下图  
 <img width="587" alt="image" src="https://user-images.githubusercontent.com/110716367/232279092-6d1a69ba-5721-4cef-b92c-f6974c7c5dc5.png">
 
 ### 图像变换/损坏对于embedding的影响
-xx
+**结论1：** embedding算法对于原图的仿射变换非常敏感（其中平移的影响最大），如下图。
+<img width="606" alt="image" src="https://user-images.githubusercontent.com/110716367/232279349-36f98927-04ef-4ffb-b40d-26d825dd6fcb.png">  
+
+**结论2:** 但是对图像的defects非常鲁邦（这种现象有利于图像编辑方面的应用）。如下图。  
+<img width="301" alt="image" src="https://user-images.githubusercontent.com/110716367/232279427-7999834b-e0e9-4b6d-8f6e-f38743f09659.png">
+
+
 ### 选择什么空间做embedding
-xx
+stylegan中是`z->mappinng net->w->synthesize net->image`
+可以选择的隐空间有最开始的noise z，中间输出w。  
+但是文中说，这两种的效果都不是很好，最终选择了w+空间，也就是中间输出w的扩展。w的shape是(1,512),而w+则是(18,512),其中的18对应了synthesize net的每一层。  
+此外，文中还进行了额外的实验，看synthesize net的权重是否会影响重建的效果，结果如下图，能发现w+空间得到的(f),(g)明显好于w空间的(c),(d)（这儿没太明白：个人推测是用训练好的网络优化得到embedding后，再随机初始化synthesize net的权重，看生成图像的质量)  
+<img width="608" alt="image" src="https://user-images.githubusercontent.com/110716367/232280171-61ef6b02-5e9c-4bd6-855a-afc7ef1b9c7c.png"> 
+
 ### 关于latent space空间的选择
 xx
 ### embedding的意义

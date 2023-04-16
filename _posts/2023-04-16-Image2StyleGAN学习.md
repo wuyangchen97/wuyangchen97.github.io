@@ -27,7 +27,7 @@ def embedding_function(image):
     img_p = upsample(img_p)
     perceptual = VGG16_perceptual().to(device)
     MSE_loss = nn.MSELoss(reduction="mean")  
-    # W+
+    # W+ 
     latents = torch.zeros((1, 18, 512), requires_grad=True, device=device)
     optimizer = optim.Adam({latents}, lr=args.lr, betas=(0.9, 0.999), eps=1e-8)
 
@@ -37,8 +37,8 @@ def embedding_function(image):
         optimizer.zero_grad()
         syn_img = g_synthesis(latents)
         syn_img = (syn_img + 1.0) / 2.0  
-	# original high-resolution real img --- MSE loss --- high-resolution synthesized img
-	# downsampled real img --- perceptual loss --- downsampled synthesized img    
+	# original high-resolution real img --- MSE loss --- high-resolution synthesized img  
+	# downsampled real img --- perceptual loss --- downsampled synthesized img      
 	mse, per_loss = loss_function(syn_img, image, img_p, MSE_loss, upsample, perceptual)
         psnr = PSNR(mse, flag=0)
         loss = per_loss + mse
@@ -78,9 +78,9 @@ stylegan中是`z->mappinng net->w->synthesize net->image`
 
 ### embedding的意义
 
-- Morphing
+- Morphing  
 简单来说就是对两张图的embedding做加权后，生成新的图片。
-$w=\lambda w_1 + (1-\lambda)w_2$  
+$$ w=\lambda w_1 + (1-\lambda)w_2 $$  
 实验发现，对于不是人脸的图像来说，Morphing的效果不好。    
 <img width="291" alt="image" src="https://user-images.githubusercontent.com/110716367/232280470-e011a2e7-ef37-4d1c-ad5e-c2da27e4e1a1.png">      
 
@@ -97,7 +97,7 @@ def morphing(w0, w1, img_id0, img_id1):
         save_image(syn_img.clamp(0, 1), "save_images/image2stylegan/morphing/morphed_{}_{}_{}.png".format(img_id0, img_id1, i))
 ```
 
-- Style Transfer
+- Style Transfer  
 用w1前9个vector的作为content，用w2的后9个vector作为style，合并为w   
 <img width="295" alt="image" src="https://user-images.githubusercontent.com/110716367/232283337-87b34d19-a0a2-45c4-8874-c9c496555774.png"> 
 
@@ -117,9 +117,9 @@ def style_transfer(target_latent, style_latent, src, tgt):
     save_image(syn_img.clamp(0, 1), "save_images/image2stylegan/style_transfer/Style_transfer_{}_{}_10.png".format(src, tgt))
 ```
 
-- Expression Transfer and Face Reenactment
+- Expression Transfer and Face Reenactment  
 简单来说就是用两张图的表情差异的到$\delta embedding$,然后对目标图像的embedding进行修改。  
-$w=w_1 + \lambda(w_3-w_2)$ 
+$$w=w_1 + \lambda(w_3-w_2)$$ 
 其中w2的图像一般是自然的表情，w3是目标表情
 
 

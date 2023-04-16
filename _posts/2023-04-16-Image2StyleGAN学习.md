@@ -48,9 +48,10 @@ def embedding_function(image):
         loss.backward()
         optimizer.step()
 ```
+其中的perceptual loss是采用vgg16,conv1_1,conv1_2,conv3_2,conv4_2的output  
 
 ## 论文要点
-TODO
+算法本身比较简单，主要是从实验去分析。
 ### 什么类型的图能够有效做embedding
 测试方式：  
 输入：faces of cat, dogs, and paintings； and register these images to a canonical face position （注意测试的两个要点：一是要共同享有face结构的；二是要配准至标准脸位置）  
@@ -123,7 +124,9 @@ $$w=w_1 + \lambda(w_3-w_2)$$
 其中w2的图像一般是自然的表情，w3是目标表情
 
 
-
+### 其他
+有意思的现象:对于latent的初始化，作者发现，若采用w的均值作为初始化值，那么人脸上的效果好，但是其他类别反而不好。不是人脸的类别采用uniform distribution初始化反而更好，因此猜测，这其中的原因为：
+>  Intuitively, the phenomenon suggests that the distribution has only one cluster of faces, the other instances (e.g. dogs, cats) are scattered points surrounding the cluster without obvious patterns. 
 
 
 

@@ -12,6 +12,8 @@ tags:
 ---
 作者实际上提出了三种模型
 
-## latent optimization
+## latent optimization. 
+优化方法如下图所示：
+<img width="617" alt="image" src="https://user-images.githubusercontent.com/110716367/232315868-b9f2a1f2-17c3-4f4d-934c-dee3a844d440.png">
 
 这种方式的缺点的每次manipulation需要一定时间（几分钟的优化过程）

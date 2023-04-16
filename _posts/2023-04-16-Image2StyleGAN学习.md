@@ -1,43 +1,75 @@
 ---
 layout:     post
-title:      KVO详解
-subtitle:   KVO底层原理及其实现
-date:       2021-03-29
-author:     BY
+title:      Image2StyleGAN学习
+subtitle:   要点总结
+date:       2023-04-16
+author:     CWY
 header-img: img/post-bg-cook.jpg
 catalog: true
 tags:
-    - iOS
+    - GAN
 ---
 
 ## 前言
 
-作为一名iOS开发者，最近面试被问到了`KVO`的问题。其实`KVO`的原理以及`runtiem`的知识，很早之前就有学习和使用了，但是实现的细节都忘记差不多了，故再此重新梳理一下。
+最开始还不明白，为什么要有专门的模型/方法去做embedding，用判别器或分类器的前一层出来的feature vector不就是embedding了吗？用这个embedding也能实现下游的比对或检索任务。
+看了文章后，我认为该文章所指的embedding是指能够reconstruct original images的，这样才能将原图重新映射回embedding（不然只能不受掌控的由noise生成随机图案），而且需要embedding学习到的特征尽可能的彼此线性可分，这样能进一步在原图映射回的embedding上做编辑，编辑后再由生成网络得到图像，达到对原图的定向修改。
 
+## embedding算法
 
+<img width="440" alt="image" src="https://user-images.githubusercontent.com/110716367/232276737-01989358-f377-4834-9051-53a1812e3cc7.png">
 
-## 正文
+如下
+```python
+def embedding_function(image):
+    upsample = torch.nn.Upsample(scale_factor=256 / 1024, mode='bilinear')
+    img_p = image.clone()
+    img_p = upsample(img_p)
+    perceptual = VGG16_perceptual().to(device)
+    MSE_loss = nn.MSELoss(reduction="mean")
+    # W+ 
+    latents = torch.zeros((1, 18, 512), requires_grad=True, device=device)
+    optimizer = optim.Adam({latents}, lr=args.lr, betas=(0.9, 0.999), eps=1e-8)
 
-`NSKeyValueObserving `，一种非正式协议，通知其他对象的指定属性发生了改变。
+    loss_ = []
+    loss_psnr = []
+    for e in range(args.epochs):
+        optimizer.zero_grad()
+        syn_img = g_synthesis(latents)
+        syn_img = (syn_img + 1.0) / 2.0
+	# original high-resolution real img --- MSE loss --- high-resolution synthesized img 
+	# downsampled real img --- perceptual loss --- downsampled synthesized img
+        mse, per_loss = loss_function(syn_img, image, img_p, MSE_loss, upsample, perceptual)
+        psnr = PSNR(mse, flag=0)
+        loss = per_loss + mse
+        loss.backward()
+        optimizer.step()
+```
+
+## 论文要点
+
+`Perceptual Loss`，一种非正式协议，通知其他对象的指定属性发生了改变。
 
 简单理解就是，监听一个对象的某个`属性`是否发生改变。
 
-### KVO的使用
+### 关于latent space空间的选择
 
-- 监听某个对象的某个属性
+- 最开始的noise，Z空间
 
 ```	objc
 - (void)addObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(nullable void *)context;
 ```
 
 
-- 实现非正式协议
+- 经过全连接映射后的W空间
 
 ```objc
 - (void)observeValueForKeyPath:(nullable NSString *)keyPath ofObject:(nullable id)object change:(nullable NSDictionary<NSKeyValueChangeKey, id> *)change context:(nullable void *)context;
 ```
 
-- 移除监听
+- W+空间  
+文中说“An important insight of our work is that it is not easily possible to embed into W or Z directly",
+因此将W扩展为了W+空间，该空间维度为(18,512),18分别对应g_synthesize生成网络的每一层
 
 ```objc
 - (void)removeObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath;

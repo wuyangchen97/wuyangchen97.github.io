@@ -53,7 +53,12 @@ def embedding_function(image):
 简单理解就是，监听一个对象的某个`属性`是否发生改变。
 
 ### 什么类型的图能够有效做embedding
-xx
+测试方式：
+输入：faces of cat, dogs, and paintings； and register these images to a canonical face position （注意测试的两个要点：一是要共同享有face结构的；二是要配准至标准脸位置）  
+模型：在human face上训练好的模型     
+**结论：** 即使没有在除了人脸上的类别上做训练，但是模型依旧有泛化性，能对其他类别做embedding，知识恢复的效果有些模糊。如下图  
+<img width="587" alt="image" src="https://user-images.githubusercontent.com/110716367/232279092-6d1a69ba-5721-4cef-b92c-f6974c7c5dc5.png">
+
 ### 图像变换/损坏对于embedding的影响
 xx
 ### 选择什么空间做embedding

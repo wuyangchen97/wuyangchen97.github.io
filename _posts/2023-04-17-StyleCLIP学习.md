@@ -10,7 +10,9 @@ tags:
     - GAN
     - image-text
 ---
-作者实际上提出了三种模型
+## 前沿
+StyleCLIP的目的是，输入一张图像与对应的文字描述，期望该图像能够按照文字的描述进行变化，其余特征保持不变。  
+作者针对该任务实际上提出了三种模型。
 
 ## latent optimization. 
 优化方法如下图所示：其中text就是希望图片能够修改成的target image，w是target image对应的latent code，也就是需要优化学习的参数，w_s是参考图片对应的latent code。  

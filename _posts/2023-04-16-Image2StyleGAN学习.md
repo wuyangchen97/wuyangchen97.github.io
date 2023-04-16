@@ -51,7 +51,9 @@ def embedding_function(image):
 其中的perceptual loss是采用vgg16,conv1_1,conv1_2,conv3_2,conv4_2的output  
 
 ## 论文要点
-算法本身比较简单，主要是从实验去分析。
+算法本身比较简单，如下图所示：
+
+主要是从实验去分析。
 ### 什么类型的图能够有效做embedding
 测试方式：  
 输入：faces of cat, dogs, and paintings； and register these images to a canonical face position （注意测试的两个要点：一是要共同享有face结构的；二是要配准至标准脸位置）  
@@ -68,7 +70,7 @@ def embedding_function(image):
 
 
 ### 选择什么空间做embedding
-stylegan中是`z->mappinng net->w->synthesize net->image`
+stylegan中是`z->latent mapper->w->synthesize net->image`
 可以选择的隐空间有最开始的noise z，中间输出w。  
 但是文中说，这两种的效果都不是很好，最终选择了w+空间，也就是中间输出w的扩展。w的shape是(1,512),而w+则是(18,512),其中的18对应了synthesize net的每一层。  
 此外，文中还进行了额外的实验，看synthesize net的权重是否会影响重建的效果，结果如下图，能发现w+空间得到的(f),(g)明显好于w空间的(c),(d)  

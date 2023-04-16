@@ -34,7 +34,7 @@ def embedding_function(image):
 
     loss_ = []
     loss_psnr = []
-    for e in range(args.epochs):#1500次即可
+    for e in range(args.epochs):#1500次即可  
         optimizer.zero_grad()
         syn_img = g_synthesis(latents)
         syn_img = (syn_img + 1.0) / 2.0  

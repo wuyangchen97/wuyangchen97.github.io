@@ -13,8 +13,8 @@ tags:
 作者实际上提出了三种模型
 
 ## latent optimization. 
-优化方法如下图所示：其中text就是希望图片能够修改成的target image，w是target image对应的latent code，也就是需要优化学习的参数，w_s是参考图片对应的latent code。
-<img width="617" alt="image" src="https://user-images.githubusercontent.com/110716367/232315868-b9f2a1f2-17c3-4f4d-934c-dee3a844d440.png">
+优化方法如下图所示：其中text就是希望图片能够修改成的target image，w是target image对应的latent code，也就是需要优化学习的参数，w_s是参考图片对应的latent code。  
+<img width="582" alt="image" src="https://user-images.githubusercontent.com/110716367/232316469-b3beb434-f16b-4727-8bf2-92becb52863e.png">
 
 这种方式的缺点的每次manipulation需要一定时间（几分钟的优化过程）
 

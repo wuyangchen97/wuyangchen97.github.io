@@ -52,7 +52,25 @@ def embedding_function(image):
 
 简单理解就是，监听一个对象的某个`属性`是否发生改变。
 
+### 什么类型的图能够有效做embedding
+xx
+### 图像变换/损坏对于embedding的影响
+xx
+### 选择什么空间做embedding
+xx
 ### 关于latent space空间的选择
+xx
+### embedding的意义
+
+- Morphing
+xx
+- Style Transfer
+xx
+- Expression Transfer and Face Reenactment
+
+
+
+
 
 - 最开始的noise，Z空间
 

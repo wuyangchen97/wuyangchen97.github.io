@@ -8,7 +8,7 @@ header-img: img/post-bg-cook.jpg
 catalog: true
 tags:
     - GAN
-    - image and text
+    - MultiModal
 ---
 ## 前沿
 StyleCLIP的目的是，输入一张图像与对应的文字描述，期望该图像能够按照文字的描述进行变化，其余特征保持不变。  

@@ -12,7 +12,7 @@ tags:
 
 ## 前言
 
-最开始还不明白，为什么要有专门的模型/方法去做embedding，用判别器或分类器的前一层出来的feature vector不就是embedding了吗？用这个embedding也能实现下游的比对或检索任务。
+最开始还不明白，为什么要有专门的模型/方法去做embedding，用判别器或分类器的前一层出来的feature vector不就是embedding了吗？用这个embedding也能实现下游的比对或检索任务。  
 看了文章后，我认为该文章所指的embedding是指能够reconstruct original images的，这样才能将原图重新映射回embedding（不然只能不受掌控的由noise生成随机图案），而且需要embedding学习到的特征尽可能的彼此线性可分，这样能进一步在原图映射回的embedding上做编辑，编辑后再由生成网络得到图像，达到对原图的定向修改。
 
 ## embedding算法
@@ -26,8 +26,8 @@ def embedding_function(image):
     img_p = image.clone()
     img_p = upsample(img_p)
     perceptual = VGG16_perceptual().to(device)
-    MSE_loss = nn.MSELoss(reduction="mean")
-    # W+ 
+    MSE_loss = nn.MSELoss(reduction="mean")  
+    # W+
     latents = torch.zeros((1, 18, 512), requires_grad=True, device=device)
     optimizer = optim.Adam({latents}, lr=args.lr, betas=(0.9, 0.999), eps=1e-8)
 
@@ -36,10 +36,10 @@ def embedding_function(image):
     for e in range(args.epochs):
         optimizer.zero_grad()
         syn_img = g_synthesis(latents)
-        syn_img = (syn_img + 1.0) / 2.0
-	# original high-resolution real img --- MSE loss --- high-resolution synthesized img   
-	# downsampled real img --- perceptual loss --- downsampled synthesized img  
-        mse, per_loss = loss_function(syn_img, image, img_p, MSE_loss, upsample, perceptual)
+        syn_img = (syn_img + 1.0) / 2.0  
+	# original high-resolution real img --- MSE loss --- high-resolution synthesized img
+	# downsampled real img --- perceptual loss --- downsampled synthesized img    
+	mse, per_loss = loss_function(syn_img, image, img_p, MSE_loss, upsample, perceptual)
         psnr = PSNR(mse, flag=0)
         loss = per_loss + mse
         loss.backward()
@@ -71,7 +71,8 @@ def embedding_function(image):
 stylegan中是`z->mappinng net->w->synthesize net->image`
 可以选择的隐空间有最开始的noise z，中间输出w。  
 但是文中说，这两种的效果都不是很好，最终选择了w+空间，也就是中间输出w的扩展。w的shape是(1,512),而w+则是(18,512),其中的18对应了synthesize net的每一层。  
-此外，文中还进行了额外的实验，看synthesize net的权重是否会影响重建的效果，结果如下图，能发现w+空间得到的(f),(g)明显好于w空间的(c),(d)（这儿没太明白：个人推测是用训练好的网络优化得到embedding后，再随机初始化synthesize net的权重，看生成图像的质量)    
+此外，文中还进行了额外的实验，看synthesize net的权重是否会影响重建的效果，结果如下图，能发现w+空间得到的(f),(g)明显好于w空间的(c),(d)  
+> 这儿没太明白：个人推测是用训练好的网络优化得到embedding后，再随机初始化synthesize net的权重，看生成图像的质量)    
 <img width="608" alt="image" src="https://user-images.githubusercontent.com/110716367/232280171-61ef6b02-5e9c-4bd6-855a-afc7ef1b9c7c.png">   
 
 
@@ -117,7 +118,9 @@ def style_transfer(target_latent, style_latent, src, tgt):
 ```
 
 - Expression Transfer and Face Reenactment
-
+简单来说就是用两张图的表情差异的到$\delta embedding$,然后对目标图像的embedding进行修改。  
+$w=w_1 + \lambda(w_3-w_2)$ 
+其中w2的图像一般是自然的表情，w3是目标表情
 
 
 

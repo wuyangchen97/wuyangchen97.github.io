@@ -51,7 +51,8 @@ def embedding_function(image):
 其中的perceptual loss是采用vgg16,conv1_1,conv1_2,conv3_2,conv4_2的output  
 
 ## 论文要点
-算法本身比较简单，如下图所示：
+算法本身比较简单，如下图所示：  
+<img width="751" alt="image" src="https://user-images.githubusercontent.com/110716367/232314991-6724af05-e6f3-440a-9bb6-409e1de3f780.png">  
 
 主要是从实验去分析。
 ### 什么类型的图能够有效做embedding

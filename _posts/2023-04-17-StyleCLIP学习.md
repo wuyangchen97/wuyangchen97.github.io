@@ -4,7 +4,7 @@ title:      StyleCLIP学习
 subtitle:   主要算法与实验总结
 date:       2023-04-17
 author:     cwy
-header-img: 
+header-img: img/post-bg-cook.jpg
 catalog: true
 tags:
     - GAN

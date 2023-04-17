@@ -12,4 +12,8 @@ tags:
 
 ## 前言
 
+- (1) directly optimize the latent vector to minimize the error for the given image.  
+- (2) train an encoder to map the given image to the latent space.  
+- (3) use a hybrid approach combining both.  
+
 

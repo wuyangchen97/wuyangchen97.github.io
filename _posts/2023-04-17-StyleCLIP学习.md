@@ -38,7 +38,13 @@ StyleCLIP的目的是，输入一张图像与对应的文字描述，期望该�
 - the directions of different manipulation steps for a given text prompt tend to be similar.  
 
 ## Gobal Direction  
-TODO.  
+文中特别指出，CLIP空间中的图像manifold和文本manifold是两个不同的manifold，且没有一对一的关系。  
+因为clip对特征是做了norm操作的，因此无法从特征长度上获得有用信息，文中给出的假设是：  
+> 对于一个CLIP空间中的<image,text>对，给定同样的语义信息对它们改变时，它们在CLIP空间中的变化方向是近似共线的  
+
+具体来说，其中$\Delta t$是通过prompt engineering得到，例如目前操控的是一个人脸，目标是获得戴眼镜的人脸，那么$\Delta t$=embedding("face with glasses")-embedding("face")
+
+整体示意图如下：  
 <img width="664" alt="image" src="https://user-images.githubusercontent.com/110716367/232367200-8c658231-88e0-4131-b373-834226c219d0.png">
 
 

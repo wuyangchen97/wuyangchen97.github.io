@@ -49,7 +49,12 @@ StyleCLIP的目的是，输入一张图像与对应的文字描述，期望该�
 
 为了达到图中的目的，则需要弄清Style空间中的s变化与CLIP空间中i变化的相关性。  
 （这一块没有特别明白，可能有错误）  
-做法是：每次只改变s中的c channel，然后对改变后的s生成图片，看该图片与原图在CLIP空间形成的$\Delta i$ 与 $\Delta t$ 的投影大小，如果大于设定阈值，则表明这一个channel是对结果有影响的。 
+做法是：每次只改变s中的某些entries，然后对改变后的s生成图片 $i+\Delta i = G(s+\Delta s)$，看该图片与原图$i=G(s)$在CLIP空间形成的$\Delta i$ 与 $\Delta t$ 的投影大小，如果大于设定阈值，则表明这一个channel是对结果有影响的。 
+
+缺点（StyleGAN-NADA）：
+> However, these approaches all share the limitation common to latent space editing methods - the modification that they can apply are largely constrained to the domain of the pre-trained generator. As such, they can allow for changes in hairstyle, expression, or even convert a wolf to a lion if the generator has seen both - but they cannot convert a photo to a painting, or produce cats when trained on dogs.  
+
+
 
 
 

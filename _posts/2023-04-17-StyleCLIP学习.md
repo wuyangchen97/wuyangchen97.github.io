@@ -17,7 +17,12 @@ StyleCLIP的目的是，输入一张图像与对应的文字描述，期望该�
 
 ## Latent optimization   
 优化方法如下图所示：其中text就是希望图片能够修改成的target image，w是target image对应的latent code，也就是需要优化学习的参数，w_s是参考图片对应的latent code。  
-<img width="582" alt="image" src="https://user-images.githubusercontent.com/110716367/232316469-b3beb434-f16b-4727-8bf2-92becb52863e.png">
+<img width="582" alt="image" src="https://user-images.githubusercontent.com/110716367/232316469-b3beb434-f16b-4727-8bf2-92becb52863e.png">  
+
+loss：  
+<img width="421" alt="image" src="https://user-images.githubusercontent.com/110716367/232663204-9d651499-5d31-4f2a-9e9c-29a0a5787835.png">
+其中，L_ID(w) = 1 − ⟨R(G(ws)), R(G(w))⟩,R是预训练好的人脸识别模型，本文基于ArcFace。  
+
 
 这种方式的缺点:  
 - 每次manipulation需要一定时间（几分钟的优化过程）  

@@ -13,14 +13,14 @@ tags:
 
 ## 前沿
 StyleCLIP的目的是，输入一张图像与对应的文字描述，期望该图像能够按照文字的描述进行变化，其余特征保持不变。  
-作者针对该任务实际上提出了三种模型。
+作者针对该任务实际上提出了三种模型，前两种Latent Optimization， Latent Mapper基本属于一种，Global Direction 属于另一种。
 
-## Latent optimization   
+## Latent Optimization   
 优化方法如下图所示：其中text就是希望图片能够修改成的target image，w是target image对应的latent code，也就是需要优化学习的参数，w_s是参考图片对应的latent code。  
 <img width="582" alt="image" src="https://user-images.githubusercontent.com/110716367/232316469-b3beb434-f16b-4727-8bf2-92becb52863e.png">  
 
 loss：  
-<img width="421" alt="image" src="https://user-images.githubusercontent.com/110716367/232663204-9d651499-5d31-4f2a-9e9c-29a0a5787835.png">
+<img width="421" alt="image" src="https://user-images.githubusercontent.com/110716367/232663204-9d651499-5d31-4f2a-9e9c-29a0a5787835.png">  
 其中，L_ID(w) = 1 − ⟨R(G(ws)), R(G(w))⟩,R是预训练好的人脸识别模型，本文基于ArcFace。  
 
 
@@ -37,6 +37,11 @@ loss：
 
 优化方法如下图所示：  
 <img width="831" alt="image" src="https://user-images.githubusercontent.com/110716367/232360252-7150d5d2-f12b-48a2-bd66-93cf1a536b92.png">  
+loss:  
+<img width="407" alt="image" src="https://user-images.githubusercontent.com/110716367/232663706-5b2193fb-779a-4513-b058-5d26cf527b54.png">  
+其中，LCLIP(w) = DCLIP(G(w + Mt(w)), t)
+
+
 
 这种方式的缺点：  
 - falls short when a fine-grained disentangled manipulation is desired.  

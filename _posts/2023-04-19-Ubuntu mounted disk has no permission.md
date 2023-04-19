@@ -11,16 +11,16 @@ tags:
 ---
 
 ## BackGround
-Assuming you have a new disk that needs to be mounted, you'll need to follow these steps
+Assuming you have a new disk that needs to be mounted, you can refer to following steps
 
 ## Solution
-step1: check the filesystem and mounted point of target 
+step1: check the filesystem and other informations 
 `lsblk -f`  
 
-step2: get the user id:  
+step2: get the user id(uid=xx in step3):  
 `grep ^"$USER" /etc/group`
 
-step2: mount it using the following command: 
+step3: mount it using the following command: 
 
 > with execute permissions for files, no access for 'others'  
 

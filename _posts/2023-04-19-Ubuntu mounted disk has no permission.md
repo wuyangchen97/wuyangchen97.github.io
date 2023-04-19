@@ -11,7 +11,7 @@ tags:
 ---
 
 ## BackGround
-Assuming you have a new disk that needs to be mounted, you can refer to following steps
+Assuming you have a new disk that needs to be mounted, you can refer to the following steps
 
 ## Solution
 step1: check the filesystem and other informations 
